@@ -2,8 +2,6 @@
 Caso 4
 
 
-# Caso 4 – *Predicting Customer Churn at QWE Inc.*
-
 ## Descripción general
 
 Este repositorio contiene el desarrollo completo del **Caso 4: Predicción y prevención de la deserción de clientes en QWE Inc.**, cuyo objetivo fue **identificar los factores determinantes del abandono de clientes** mediante la estimación de un **modelo logit de probabilidad de churn**.  
