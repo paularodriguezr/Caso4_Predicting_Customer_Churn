@@ -188,26 +188,80 @@ tabla_glance_gt <- tabla_glance_modelo %>%
 
 gtsave(tabla_glance_gt, "tabla_glance_modelo.png")
 
-# ===============================
+# ------------------------------------------------------------
 # 6) Efectos marginales promedio
-# ===============================
+# ------------------------------------------------------------
 ame_obj <- margins::margins(logit_model)
 ame_sum <- summary(ame_obj)
 print(ame_sum)
-write.csv(as.data.frame(ame_sum), "efectos_marginales_promedio.csv", row.names = FALSE)
 
-# ===============================
-# 7) Gráfico: residuales vs valores predichos
-# ===============================
-pred_prob <- predict(logit_model, type = "response")
-res_dev <- residuals(logit_model, type = "deviance")
-df_res <- tibble(pred_prob = pred_prob, resid = res_dev)
+# Guardar tabla CSV
+write.csv(as.data.frame(ame_sum),
+          file = "efectos_marginales_promedio.csv",
+          row.names = FALSE)
 
-p_res <- ggplot(df_res, aes(x = pred_prob, y = resid)) +
-  geom_point(alpha = 0.6) +
-  geom_smooth(method = "loess", se = TRUE, color = "red") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
-  labs(x = "Probabilidad predicha", y = "Residuales (deviance)", title = "Residuales vs Probabilidad predicha") +
+# Tabla bonita
+ame_gt <- as.data.frame(ame_sum) %>%
+  mutate(across(where(is.numeric), round, 4)) %>%
+  gt() %>%
+  tab_header(
+    title = "Efectos Marginales Promedio del Modelo Logit",
+    subtitle = "Interpretación del impacto promedio de cada variable sobre la probabilidad de churn"
+  )
+
+gtsave(ame_gt, "efectos_marginales_promedio.png")
+
+
+# ------------------------------------------------------------
+# 7) Probabilidades predichas y matriz de confusión
+# ------------------------------------------------------------
+model_data <- model_data %>%
+  mutate(
+    p_hat = predict(logit_model, type = "response"),
+    churn_pred = ifelse(p_hat >= 0.5, 1, 0)
+  )
+
+# Matriz de confusión
+conf_matrix <- table(Real = model_data$churn, Predicho = model_data$churn_pred)
+accuracy <- mean(model_data$churn == model_data$churn_pred)
+
+print(conf_matrix)
+print(paste("Accuracy del modelo:", round(accuracy, 4)))
+
+# Guardar matriz y resultado
+write.csv(as.data.frame(conf_matrix), "matriz_confusion.csv", row.names = FALSE)
+
+conf_gt <- as.data.frame(conf_matrix) %>%
+  gt() %>%
+  tab_header(
+    title = "Matriz de Confusión del Modelo Logit",
+    subtitle = paste("Accuracy del modelo:", round(accuracy, 4))
+  )
+
+gtsave(conf_gt, "matriz_confusion.png")
+
+
+# ------------------------------------------------------------
+# 8) Gráfico de residuos estandarizados vs probabilidad predicha
+# ------------------------------------------------------------
+# Crear residuos estandarizados
+res_std <- rstandard(logit_model, type = "deviance")
+
+# Crear dataframe para graficar
+df_res2 <- tibble(
+  prob_predicha = model_data$p_hat,
+  resid_estandarizado = res_std
+)
+
+# Graficar residuos estandarizados
+p_res2 <- ggplot(df_res2, aes(x = prob_predicha, y = resid_estandarizado)) +
+  geom_point(alpha = 0.5) +
+  geom_hline(yintercept = 0, color = "blue", linetype = "dashed") +
+  labs(
+    x = "Probabilidad predicha de churn",
+    y = "Residuos estandarizados",
+    title = "Gráfico de residuos estandarizados vs probabilidad predicha"
+  ) +
   theme_minimal()
 
-ggsave("residuales_vs_predichos.png", p_res, width = 7, height = 4)
+ggsave("grafico_residuos_estandarizados.png", p_res2, width = 7, height = 4)
