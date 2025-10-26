@@ -83,14 +83,28 @@ desc_by_churn <- model_data %>%
 
 desc_by_churn
 
-# Guardar tabla descriptiva como imagen (usa gt + webshot2)
-if (!requireNamespace("webshot2", quietly = TRUE)) install.packages("webshot2")
 
-desc_table <- desc_by_churn %>%
-  mutate(across(where(is.numeric), ~round(., 2))) %>%
-  gt()
+# Visualizar como tabla en el visor de RStudio
+library(gt)
 
-gtsave(desc_table, "desc_by_churn.png")
+desc_by_churn %>%
+  gt() %>%
+  tab_header(
+    title = "Tabla 1. Estadísticas descriptivas por grupo de churn",
+    subtitle = "Comparación entre clientes retenidos (churn=0) y desertores (churn=1)"
+  ) %>%
+  cols_label(
+    churn = "Estado del cliente",
+    n = "Número de observaciones",
+    avg_age = "Edad promedio (meses)",
+    avg_chi_now = "CHI promedio",
+    avg_chi_change = "Cambio en CHI",
+    avg_cases_now = "Casos actuales",
+    avg_priority_now = "Prioridad promedio",
+    avg_logins_change = "Cambio en logins",
+    avg_views_change = "Cambio en views",
+    avg_days_since_last_login_change = "Cambio días sin login"
+  )
 
 # ===============================
 # 4. Modelo de regresión logística

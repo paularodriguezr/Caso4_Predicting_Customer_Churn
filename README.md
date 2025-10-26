@@ -33,7 +33,7 @@ QWE Inc. es una empresa dedicada a ofrecer servicios de gestión de presencia en
    Aplicación de un modelo de regresión logística para predecir la probabilidad de abandono en función de variables como satisfacción (CHI), uso de la plataforma, soporte y antigüedad.
 
 4. **Evaluación del modelo:**  
-   Cálculo de métricas de desempeño (Pseudo R² = 0.0440, accuracy ≈ 94.9%), matriz de confusión, residuos y curva ROC para validar su capacidad predictiva.
+   Cálculo de métricas de desempeño (R² = 0.0440, accuracy ≈ 94.9%), matriz de confusión, residuos y curva ROC para validar su capacidad predictiva.
 
 ---
 
@@ -47,7 +47,7 @@ QWE Inc. es una empresa dedicada a ofrecer servicios de gestión de presencia en
 
 ## Conclusión general
 
-El modelo desarrollado, aunque con un poder explicativo moderado (Pseudo R² de 0.0440), ofrece una herramienta predictiva confiable para la toma de decisiones en QWE Inc.  
+El modelo desarrollado, aunque con un poder explicativo moderado (R² de 0.0440), ofrece una herramienta predictiva confiable para la toma de decisiones en QWE Inc.  
 Permite pasar de una gestión reactiva del cliente a una estrategia proactiva de fidelización basada en datos, centrada en monitorear la satisfacción y la actividad de uso del servicio.
 
 ---
@@ -59,5 +59,6 @@ Proyecto elaborado por:
 - Valery Ramirez
 - Paula Rodriguez
 Analítica de Negocios 
+
 Pontificia Universidad Javeriana – 2025-2  
 Profesor: **Juan Nicolás Velásquez Rey**
